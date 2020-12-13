@@ -1,13 +1,19 @@
 package com.android.example.ensiie_android_projet.tasklist
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListAdapter
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.example.ensiie_android_projet.R
-
-class TaskListAdapter (private val taskList : List<Task>) : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>()
+/*
+* Pour comprendre le principe de ListAdapter:
+* https://blog.usejournal.com/why-you-should-be-using-the-new-and-improved-listadapter-in-android-17a2ab7ca644
+* */
+class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAdapter.TaskViewHolder>(TaskDiffCallback())
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListAdapter.TaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
@@ -15,11 +21,7 @@ class TaskListAdapter (private val taskList : List<Task>) : RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: TaskListAdapter.TaskViewHolder, position: Int) {
-        holder.bind(taskList[position])
-    }
-
-    override fun getItemCount(): Int {
-        return taskList.size;
+        holder.bind(currentList[position])
     }
     inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(taskTitle: Task) {
@@ -30,5 +32,13 @@ class TaskListAdapter (private val taskList : List<Task>) : RecyclerView.Adapter
                 description.text=taskTitle.description
             }
         }
+    }
+}
+class TaskDiffCallback : DiffUtil.ItemCallback<Task>() {
+    override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem.id == newItem.id
+    }
+    override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
+        return oldItem.title == newItem.title && newItem.description == oldItem.description
     }
 }
