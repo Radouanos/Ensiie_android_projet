@@ -1,15 +1,21 @@
 package com.android.example.ensiie_android_projet.tasklist
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ListAdapter
 import android.widget.TextView
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.example.ensiie_android_projet.R
+import com.android.example.ensiie_android_projet.task.TaskActivity
+import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
+
 /*
 * Pour comprendre le principe de ListAdapter:
 * https://blog.usejournal.com/why-you-should-be-using-the-new-and-improved-listadapter-in-android-17a2ab7ca644
@@ -17,6 +23,7 @@ import com.android.example.ensiie_android_projet.R
 class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAdapter.TaskViewHolder>(TaskDiffCallback())
 {
     var onDeleteTask :((Task) -> Unit)?=null
+    var onEditTask : ((Task) -> Unit)?=null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListAdapter.TaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
@@ -32,9 +39,11 @@ class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAd
                 val title = findViewById<TextView>(R.id.task_title)
                 val description = findViewById<TextView>(R.id.task_description)
                 val delbutton = findViewById<ImageButton>(R.id.del_button)
+                val editbutton = findViewById<ImageButton>(R.id.edit_button)
                 title.text=taskTitle.title
                 description.text=taskTitle.description
                 delbutton.setOnClickListener{onDeleteTask?.invoke(taskTitle)}
+                editbutton.setOnClickListener{onEditTask?.invoke(taskTitle)}
             }
         }
     }
