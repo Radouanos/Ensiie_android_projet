@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ListAdapter
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -15,6 +16,8 @@ import com.android.example.ensiie_android_projet.R
 * */
 class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAdapter.TaskViewHolder>(TaskDiffCallback())
 {
+    var onDeleteTask :((Task) -> Unit)?=null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListAdapter.TaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
         return TaskViewHolder(itemView)
@@ -28,8 +31,10 @@ class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAd
             itemView.apply { // `apply {}` permet d'éviter de répéter `itemView.*`
                 val title = findViewById<TextView>(R.id.task_title)
                 val description = findViewById<TextView>(R.id.task_description)
+                val delbutton = findViewById<ImageButton>(R.id.del_button)
                 title.text=taskTitle.title
                 description.text=taskTitle.description
+                delbutton.setOnClickListener{onDeleteTask?.invoke(taskTitle)}
             }
         }
     }
