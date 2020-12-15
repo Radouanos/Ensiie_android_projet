@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ import com.android.example.ensiie_android_projet.MainActivity
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
+import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
@@ -52,14 +54,27 @@ class TaskListFragment : Fragment()
                 taskList.remove(task)
                 adapter.notifyDataSetChanged()
         }
+        adapter.onEditTask = {
+            task ->
+                val intent = Intent(activity,TaskActivity::class.java)
+                intent.putExtra("task",task)
+                startActivityForResult(intent, EDIT_TASK_REQUEST_CODE)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == AppCompatActivity.RESULT_OK && requestCode == ADD_TASK_REQUEST_CODE) {
+        if(resultCode == AppCompatActivity.RESULT_OK) {
             val task = data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            taskList.add(task)
-            adapter.notifyDataSetChanged()
+            if(requestCode == ADD_TASK_REQUEST_CODE )
+            {
+                taskList.add(task)
+                adapter.notifyDataSetChanged()
+            } else if(requestCode == EDIT_TASK_REQUEST_CODE)
+            {
+                taskList.set(taskList.indexOf(taskList.find{it.id == task?.id}),task)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 }
