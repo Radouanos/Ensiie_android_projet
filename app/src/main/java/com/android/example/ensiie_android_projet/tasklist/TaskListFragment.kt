@@ -1,11 +1,14 @@
 package com.android.example.ensiie_android_projet.tasklist
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -30,6 +33,24 @@ class TaskListFragment : Fragment()
 
     val adapter = TaskListAdapter()
 
+    private val intent_add_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        result : ActivityResult ->
+        if(result.resultCode == Activity.RESULT_OK)
+        {
+            val intent = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
+            taskList.add(intent)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
+    private val intent_edit_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
+            taskList.set(taskList.indexOf(taskList.find { it.id == intent?.id }), intent)
+            adapter.notifyDataSetChanged()
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         //return super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.fragment_task_list,container,false)
@@ -46,8 +67,7 @@ class TaskListFragment : Fragment()
         adapter.submitList(taskList)
 
         fab.setOnClickListener{
-            val intent = Intent(activity,TaskActivity::class.java)
-            startActivityForResult(intent,ADD_TASK_REQUEST_CODE)
+            intent_add_task.launch(Intent(activity,TaskActivity::class.java))
         }
         adapter.onDeleteTask = {
             task ->
@@ -56,25 +76,7 @@ class TaskListFragment : Fragment()
         }
         adapter.onEditTask = {
             task ->
-                val intent = Intent(activity,TaskActivity::class.java)
-                intent.putExtra("task",task)
-                startActivityForResult(intent, EDIT_TASK_REQUEST_CODE)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == AppCompatActivity.RESULT_OK) {
-            val task = data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            if(requestCode == ADD_TASK_REQUEST_CODE )
-            {
-                taskList.add(task)
-                adapter.notifyDataSetChanged()
-            } else if(requestCode == EDIT_TASK_REQUEST_CODE)
-            {
-                taskList.set(taskList.indexOf(taskList.find{it.id == task?.id}),task)
-                adapter.notifyDataSetChanged()
-            }
+            intent_edit_task.launch(Intent(activity,TaskActivity::class.java).putExtra("task",task))
         }
     }
 }
