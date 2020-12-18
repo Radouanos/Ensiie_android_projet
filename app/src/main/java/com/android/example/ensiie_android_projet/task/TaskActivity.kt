@@ -1,9 +1,11 @@
 package com.android.example.ensiie_android_projet.task
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.tasklist.Task
@@ -30,6 +32,25 @@ class TaskActivity : AppCompatActivity() {
             setResult(RESULT_OK,intent)
             finish()
         }
+        when {
+            intent?.action == Intent.ACTION_SEND -> {
+                if("text/plain" == intent.type)
+                {
+                    handleSendText(intent,title,description)
+                }
+            }
+            else -> {
+                Toast.makeText(this,"INTENT HAS ANOTHER TYPE",Toast.LENGTH_LONG).show()
+            }
+        }
 
+    }
+
+    private fun handleSendText(intent: Intent,title:EditText,description:EditText) {
+        intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            title?.setText(it)
+            description?.setText(it)
+        }
+        Toast.makeText(this,"INTENT Received",Toast.LENGTH_LONG).show()
     }
 }
