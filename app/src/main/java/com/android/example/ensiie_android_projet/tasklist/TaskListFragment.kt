@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -77,6 +78,17 @@ class TaskListFragment : Fragment()
         adapter.onEditTask = {
             task ->
             intent_edit_task.launch(Intent(activity,TaskActivity::class.java).putExtra("task",task))
+        }
+        adapter.onShareTask = {
+            task ->
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, task.title+" + "+task.description)
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, "choisir une application")
+            startActivity(shareIntent)
         }
     }
 }

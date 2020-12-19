@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ListAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.android.example.ensiie_android_projet.R
@@ -24,9 +26,11 @@ class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAd
 {
     var onDeleteTask :((Task) -> Unit)?=null
     var onEditTask : ((Task) -> Unit)?=null
+    var onShareTask : ((Task)->Unit)?=null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListAdapter.TaskViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task, parent, false)
+
         return TaskViewHolder(itemView)
     }
 
@@ -44,6 +48,8 @@ class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAd
                 description.text=taskTitle.description
                 delbutton.setOnClickListener{onDeleteTask?.invoke(taskTitle)}
                 editbutton.setOnClickListener{onEditTask?.invoke(taskTitle)}
+                title.setOnLongClickListener{onShareTask?.invoke(taskTitle)
+                true}
             }
         }
     }
