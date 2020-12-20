@@ -7,20 +7,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.example.ensiie_android_projet.MainActivity
 import com.android.example.ensiie_android_projet.R
+import com.android.example.ensiie_android_projet.network.Api
 import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 import java.util.*
 
 class TaskListFragment : Fragment()
@@ -33,6 +37,8 @@ class TaskListFragment : Fragment()
     )
 
     val adapter = TaskListAdapter()
+
+    var textret:TextView?=null
 
     private val intent_add_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result : ActivityResult ->
@@ -79,6 +85,9 @@ class TaskListFragment : Fragment()
             task ->
             intent_edit_task.launch(Intent(activity,TaskActivity::class.java).putExtra("task",task))
         }
+
+        textret = view.findViewById(R.id.retrotext)
+
         adapter.onShareTask = {
             task ->
             val sendIntent: Intent = Intent().apply {
@@ -89,6 +98,14 @@ class TaskListFragment : Fragment()
 
             val shareIntent = Intent.createChooser(sendIntent, "choisir une application")
             startActivity(shareIntent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch{
+            val userInfo = Api.userService.getInfo().body()!!
+            textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
         }
     }
 }
