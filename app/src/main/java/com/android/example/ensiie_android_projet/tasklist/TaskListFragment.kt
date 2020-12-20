@@ -47,7 +47,7 @@ class TaskListFragment : Fragment()
     private val intent_edit_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val intent = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            taskList.set(taskList.indexOf(taskList.find { it.id == intent?.id }), intent)
+            taskList.set(taskList.indexOf(taskList.find { it.id == intent.id }), intent)
             adapter.notifyDataSetChanged()
         }
     }

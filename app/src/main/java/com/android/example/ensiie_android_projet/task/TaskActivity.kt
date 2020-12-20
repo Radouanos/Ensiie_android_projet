@@ -48,8 +48,8 @@ class TaskActivity : AppCompatActivity() {
 
     private fun handleSendText(intent: Intent,title:EditText,description:EditText) {
         intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
-            title?.setText(it)
-            description?.setText(it)
+            title.setText(it)
+            description.setText(it)
         }
         Toast.makeText(this,"INTENT Received",Toast.LENGTH_LONG).show()
     }
