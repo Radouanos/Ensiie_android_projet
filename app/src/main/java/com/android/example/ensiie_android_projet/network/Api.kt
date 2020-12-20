@@ -41,4 +41,8 @@ object Api {
         .addConverterFactory(converterFactory)
         .build()
 
+    val userService : UserService by lazy {
+        retrofit.create(UserService::class.java)
+    }
+
 }
