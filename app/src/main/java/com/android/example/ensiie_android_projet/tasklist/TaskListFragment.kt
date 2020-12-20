@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.example.ensiie_android_projet.MainActivity
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.network.Api
+import com.android.example.ensiie_android_projet.network.TasksRepository
 import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
@@ -29,6 +30,7 @@ import java.util.*
 
 class TaskListFragment : Fragment()
 {
+    private val tasksRepository = TasksRepository()
     //private val taskList = listOf("Task 1", "Task 2", "Task 3")
     private val taskList = mutableListOf(
             Task(id = "id_1", title = "Task 1", description = "description 1"),
@@ -99,6 +101,12 @@ class TaskListFragment : Fragment()
             val shareIntent = Intent.createChooser(sendIntent, "choisir une application")
             startActivity(shareIntent)
         }
+
+        tasksRepository.taskList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            taskList.clear()
+            taskList.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
     }
 
     override fun onResume() {
@@ -106,6 +114,10 @@ class TaskListFragment : Fragment()
         lifecycleScope.launch{
             val userInfo = Api.userService.getInfo().body()!!
             textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
+        }
+
+        lifecycleScope.launch {
+            tasksRepository.refresh()
         }
     }
 }
