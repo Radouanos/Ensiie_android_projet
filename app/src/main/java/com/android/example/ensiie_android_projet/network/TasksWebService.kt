@@ -7,6 +7,7 @@ import retrofit2.http.*
 interface TasksWebService {
     @GET("tasks")
     suspend fun getTasks(): Response<List<Task>>
+
     @DELETE("tasks/{id}")
     suspend fun deleteTask(@Path("id") id: String?): Response<Unit>
 

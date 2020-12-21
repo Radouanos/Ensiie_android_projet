@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,17 +48,21 @@ class TaskListFragment : Fragment()
         result : ActivityResult ->
         if(result.resultCode == Activity.RESULT_OK)
         {
-            val intent = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            taskList.add(intent)
-            adapter.notifyDataSetChanged()
+            val task = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
+            lifecycleScope.launch {
+                tasksRepository.addTask(task)
+            }
+            Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
         }
     }
 
     private val intent_edit_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            taskList.set(taskList.indexOf(taskList.find { it.id == intent.id }), intent)
-            adapter.notifyDataSetChanged()
+            val task = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
+            lifecycleScope.launch {
+                tasksRepository.updateTask(task)
+            }
+            Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -80,8 +86,10 @@ class TaskListFragment : Fragment()
         }
         adapter.onDeleteTask = {
             task ->
-                taskList.remove(task)
-                adapter.notifyDataSetChanged()
+                lifecycleScope.launch{
+                    tasksRepository.delete(task)
+                    Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
+                }
         }
         adapter.onEditTask = {
             task ->
