@@ -24,6 +24,7 @@ import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDI
 * */
 class TaskListAdapter : androidx.recyclerview.widget.ListAdapter<Task,TaskListAdapter.TaskViewHolder>(TaskDiffCallback())
 {
+    var taskList : List<Task> = emptyList()
     var onDeleteTask :((Task) -> Unit)?=null
     var onEditTask : ((Task) -> Unit)?=null
     var onShareTask : ((Task)->Unit)?=null

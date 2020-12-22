@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,19 +28,14 @@ import com.android.example.ensiie_android_projet.network.TasksRepository
 import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
+import com.android.example.ensiie_android_projet.task.TaskListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.*
 
 class TaskListFragment : Fragment()
 {
-    private val tasksRepository = TasksRepository()
-    //private val taskList = listOf("Task 1", "Task 2", "Task 3")
-    private val taskList = mutableListOf(
-            Task(id = "id_1", title = "Task 1", description = "description 1"),
-            Task(id = "id_2", title = "Task 2"),
-            Task(id = "id_3", title = "Task 3")
-    )
+    private val viewModel : TaskListViewModel by viewModels()
 
     val adapter = TaskListAdapter()
 
@@ -49,20 +46,14 @@ class TaskListFragment : Fragment()
         if(result.resultCode == Activity.RESULT_OK)
         {
             val task = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            lifecycleScope.launch {
-                tasksRepository.addTask(task)
-            }
-            Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
+                viewModel.addTask(task)
         }
     }
 
     private val intent_edit_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = result.data!!.getSerializableExtra(TaskActivity.TASK_KEY) as Task
-            lifecycleScope.launch {
-                tasksRepository.updateTask(task)
-            }
-            Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
+                viewModel.editTask(task)
         }
     }
 
@@ -79,7 +70,6 @@ class TaskListFragment : Fragment()
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
-        adapter.submitList(taskList)
 
         fab.setOnClickListener{
             intent_add_task.launch(Intent(activity,TaskActivity::class.java))
@@ -87,8 +77,7 @@ class TaskListFragment : Fragment()
         adapter.onDeleteTask = {
             task ->
                 lifecycleScope.launch{
-                    tasksRepository.delete(task)
-                    Toast.makeText(activity,tasksRepository.response, Toast.LENGTH_SHORT).show()
+                    viewModel.deleteTask(task)
                 }
         }
         adapter.onEditTask = {
@@ -110,9 +99,8 @@ class TaskListFragment : Fragment()
             startActivity(shareIntent)
         }
 
-        tasksRepository.taskList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            taskList.clear()
-            taskList.addAll(it)
+        viewModel.taskList.observe(viewLifecycleOwner, androidx.lifecycle.Observer { newList->
+            adapter.submitList(newList.orEmpty())
             adapter.notifyDataSetChanged()
         })
     }
@@ -123,9 +111,6 @@ class TaskListFragment : Fragment()
             val userInfo = Api.userService.getInfo().body()!!
             textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
         }
-
-        lifecycleScope.launch {
-            tasksRepository.refresh()
-        }
+        viewModel.loadTasks()
     }
 }
