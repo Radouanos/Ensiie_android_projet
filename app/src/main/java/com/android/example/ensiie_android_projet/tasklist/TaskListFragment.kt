@@ -77,9 +77,7 @@ class TaskListFragment : Fragment()
         }
         adapter.onDeleteTask = {
             task ->
-                lifecycleScope.launch{
                     viewModel.deleteTask(task)
-                }
         }
         adapter.onEditTask = {
             task ->
