@@ -1,10 +1,10 @@
 package com.android.example.ensiie_android_projet.network
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.android.example.ensiie_android_projet.tasklist.Task
 
+// Le Repository récupère les données
 class TasksRepository {
+    // Le web service requête le serveur
     private val tasksWebService = Api.tasksWebService
 
     suspend fun loadTasks(): List<Task>? {

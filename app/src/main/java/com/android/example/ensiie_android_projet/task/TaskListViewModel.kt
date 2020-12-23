@@ -8,6 +8,7 @@ import com.android.example.ensiie_android_projet.network.TasksRepository
 import com.android.example.ensiie_android_projet.tasklist.Task
 import kotlinx.coroutines.launch
 
+// Le ViewModel met à jour la liste de task qui est une LiveData
 class TaskListViewModel : ViewModel() {
     // [_taskList] est modifiable mais privée donc inaccessible à l'extérieur de cette classe
     private val _taskList = MutableLiveData<List<Task>>()

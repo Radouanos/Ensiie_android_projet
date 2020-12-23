@@ -33,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.*
 
+// Le Fragment observe la LiveData et met à jour la liste de l'adapter:
 class TaskListFragment : Fragment()
 {
     private val viewModel : TaskListViewModel by viewModels()
@@ -98,7 +99,7 @@ class TaskListFragment : Fragment()
             val shareIntent = Intent.createChooser(sendIntent, "choisir une application")
             startActivity(shareIntent)
         }
-
+        // On écoute l'objet LiveData du ViewModel
         viewModel.taskList.observe(viewLifecycleOwner, androidx.lifecycle.Observer { newList->
             adapter.submitList(newList.orEmpty())
             adapter.notifyDataSetChanged()
