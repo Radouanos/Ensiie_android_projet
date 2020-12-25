@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -29,6 +30,7 @@ import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskListViewModel
+import com.android.example.ensiie_android_projet.userinfo.UserInfoActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.*
@@ -39,7 +41,9 @@ class TaskListFragment : Fragment()
 
     val adapter = TaskListAdapter()
 
-    var textret:TextView?=null
+    val textret:TextView?=null
+
+    val avatar:ImageView?=null
 
     private val intent_add_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result : ActivityResult ->
@@ -67,6 +71,11 @@ class TaskListFragment : Fragment()
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
+
+        avatar.setOnClickListener{
+            val intent = Intent(this, UserInfoActivity::class.java)
+            startActivity(intent)
+        }
 
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
@@ -107,6 +116,7 @@ class TaskListFragment : Fragment()
 
     override fun onResume() {
         super.onResume()
+        image_view.l
         lifecycleScope.launch{
             val userInfo = Api.userService.getInfo().body()!!
             textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
