@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -21,6 +22,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.android.example.ensiie_android_projet.MainActivity
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.network.Api
@@ -40,6 +43,8 @@ class TaskListFragment : Fragment()
     val adapter = TaskListAdapter()
 
     var textret:TextView?=null
+
+    var avatar:ImageView?=null
 
     private val intent_add_task = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         result : ActivityResult ->
@@ -67,7 +72,7 @@ class TaskListFragment : Fragment()
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
-
+        avatar = view.findViewById<ImageView>(R.id.avatar)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
@@ -112,5 +117,9 @@ class TaskListFragment : Fragment()
             textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
         }
         viewModel.loadTasks()
+
+        avatar?.load("https://goo.gl/gEgYUd"){
+            transformations(CircleCropTransformation())
+        }
     }
 }
