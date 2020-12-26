@@ -32,6 +32,7 @@ import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskListViewModel
+import com.android.example.ensiie_android_projet.userinfo.UserInfoActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.*
@@ -73,6 +74,10 @@ class TaskListFragment : Fragment()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         avatar = view.findViewById<ImageView>(R.id.avatar)
+        avatar?.setOnClickListener {
+            val intent = Intent(activity,UserInfoActivity::class.java)
+            startActivity(intent)
+        }
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
 
