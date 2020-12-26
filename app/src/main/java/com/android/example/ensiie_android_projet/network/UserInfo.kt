@@ -10,5 +10,6 @@ data class UserInfo (
     @SerialName("firstname")
     val firstName: String,
     @SerialName("lastname")
-    val lastName : String
+    val lastName : String,
+    val avatar: String = "https://goo.gl/gEgYUd" // La valeur par défaut du logo TD6
     )

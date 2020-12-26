@@ -1,6 +1,7 @@
 package com.android.example.ensiie_android_projet.network
 
 import com.android.example.ensiie_android_projet.tasklist.Task
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -16,4 +17,5 @@ interface TasksWebService {
 
     @PATCH("tasks/{id}")
     suspend fun updateTask(@Body task: Task, @Path("id") id: String? = task.id): Response<Task>
+
 }
