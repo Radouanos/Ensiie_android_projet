@@ -22,7 +22,7 @@ android:layout_height="wrap_content"
 android:text="Prendre une photo" />
 
     <EditText
-        android:id="@+id/nameUser"
+        android:id="@+id/signup_firstname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />

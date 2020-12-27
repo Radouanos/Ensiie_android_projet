@@ -22,14 +22,16 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity android:name=".MainActivity">
+        </activity>
+        <activity android:name=".userinfo.UserInfoActivity">
+
+        </activity>
+        <activity android:name=".AuthenticationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".userinfo.UserInfoActivity">
-
         </activity>
         <activity android:name=".task.TaskActivity">
             <intent-filter>

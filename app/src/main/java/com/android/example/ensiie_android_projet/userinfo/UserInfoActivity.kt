@@ -2,33 +2,24 @@ package com.android.example.ensiie_android_projet.userinfo
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.android.example.ensiie_android_projet.BuildConfig
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.network.Api
-import com.android.example.ensiie_android_projet.network.TasksWebService
 import com.android.example.ensiie_android_projet.network.UserInfo
-import com.android.example.ensiie_android_projet.network.UserService
-import com.android.example.ensiie_android_projet.task.TaskListViewModel
-import com.android.example.ensiie_android_projet.tasklist.Task
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -58,7 +49,7 @@ class UserInfoActivity : AppCompatActivity() {
         val uploadIm = findViewById<Button>(R.id.upload_image_button)
         val updateUs = findViewById<Button>(R.id.update)
 
-        val name = findViewById<EditText>(R.id.nameUser)
+        val name = findViewById<EditText>(R.id.signup_firstname)
         val fname = findViewById<EditText>(R.id.first_name)
         val mail = findViewById<EditText>(R.id.mail)
         takePic.setOnClickListener {
