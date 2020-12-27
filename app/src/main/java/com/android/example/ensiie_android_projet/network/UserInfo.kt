@@ -1,9 +1,9 @@
 package com.android.example.ensiie_android_projet.network
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import java.io.Serializable
 
-@Serializable
+@kotlinx.serialization.Serializable
 data class UserInfo (
     @SerialName("email")
     val email: String,

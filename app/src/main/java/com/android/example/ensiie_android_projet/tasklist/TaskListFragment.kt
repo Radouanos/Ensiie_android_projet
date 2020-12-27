@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,11 +29,13 @@ import com.android.example.ensiie_android_projet.MainActivity
 import com.android.example.ensiie_android_projet.R
 import com.android.example.ensiie_android_projet.network.Api
 import com.android.example.ensiie_android_projet.network.TasksRepository
+import com.android.example.ensiie_android_projet.network.UserInfo
 import com.android.example.ensiie_android_projet.task.TaskActivity
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.ADD_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskActivity.Companion.EDIT_TASK_REQUEST_CODE
 import com.android.example.ensiie_android_projet.task.TaskListViewModel
 import com.android.example.ensiie_android_projet.userinfo.UserInfoActivity
+import com.android.example.ensiie_android_projet.userinfo.UserInfoViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.*
@@ -40,6 +43,8 @@ import java.util.*
 class TaskListFragment : Fragment()
 {
     private val viewModel : TaskListViewModel by viewModels()
+
+    private val viewModel2 : UserInfoViewModel by viewModels()
 
     val adapter = TaskListAdapter()
 
@@ -75,8 +80,10 @@ class TaskListFragment : Fragment()
         val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         avatar = view.findViewById<ImageView>(R.id.avatar)
         avatar?.setOnClickListener {
-            val intent = Intent(activity,UserInfoActivity::class.java)
-            startActivity(intent)
+            lifecycleScope.launch{
+                val intent = Intent(activity,UserInfoActivity::class.java)
+                startActivity(intent)
+            }
         }
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.adapter = adapter
@@ -113,18 +120,17 @@ class TaskListFragment : Fragment()
             adapter.submitList(newList.orEmpty())
             adapter.notifyDataSetChanged()
         })
+        viewModel2.userInfo.observe(viewLifecycleOwner, androidx.lifecycle.Observer { usr->
+            textret?.text = "${usr.firstName} ${usr.lastName}"
+            avatar?.load(usr.avatar){
+                transformations(CircleCropTransformation())
+            }
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch{
-            val userInfo = Api.userService.getInfo().body()!!
-            textret?.text = "${userInfo.firstName} ${userInfo.lastName}"
-        }
+        viewModel2.loadInfo()
         viewModel.loadTasks()
-
-        avatar?.load("https://goo.gl/gEgYUd"){
-            transformations(CircleCropTransformation())
-        }
     }
 }
