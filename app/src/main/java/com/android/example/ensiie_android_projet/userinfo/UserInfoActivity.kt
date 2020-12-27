@@ -133,6 +133,10 @@ class UserInfoActivity : AppCompatActivity() {
         viewModel.loadInfo()
     }
 
+    private fun getFromGallery() = pickInGallery.launch("image/*")
+    // use
+    private fun openCamera() = takePicture.launch(photoUri)
+
     // register
     private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) handleImage(photoUri)
@@ -143,8 +147,4 @@ class UserInfoActivity : AppCompatActivity() {
     private val pickInGallery = registerForActivityResult(ActivityResultContracts.GetContent()){ uri ->
         handleImage(uri)
     }
-
-    private fun getFromGallery() = pickInGallery.launch("image/*")
-    // use
-    private fun openCamera() = takePicture.launch(photoUri)
 }
