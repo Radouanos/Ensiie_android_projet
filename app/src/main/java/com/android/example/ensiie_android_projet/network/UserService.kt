@@ -1,5 +1,7 @@
 package com.android.example.ensiie_android_projet.network
 
+import com.android.example.ensiie_android_projet.LoginForm
+import com.android.example.ensiie_android_projet.LoginResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -13,4 +15,6 @@ interface UserService
     suspend fun updateAvatar(@Part avatar: MultipartBody.Part): Response<UserInfo>
     @PATCH("users")
     suspend fun update(@Body user: UserInfo): Response<UserInfo>
+    @POST("users/login")
+    suspend fun login(@Body user: LoginForm): Response<LoginResponse>
 }

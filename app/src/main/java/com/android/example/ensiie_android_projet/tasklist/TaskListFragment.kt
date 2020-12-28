@@ -111,7 +111,6 @@ class TaskListFragment : Fragment()
                 putExtra(Intent.EXTRA_TEXT, task.title+" + "+task.description)
                 type = "text/plain"
             }
-
             val shareIntent = Intent.createChooser(sendIntent, "choisir une application")
             startActivity(shareIntent)
         }

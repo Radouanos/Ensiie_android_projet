@@ -1,5 +1,7 @@
 package com.android.example.ensiie_android_projet.network
 
+import com.android.example.ensiie_android_projet.LoginForm
+import com.android.example.ensiie_android_projet.LoginResponse
 import com.android.example.ensiie_android_projet.tasklist.Task
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -17,5 +19,4 @@ interface TasksWebService {
 
     @PATCH("tasks/{id}")
     suspend fun updateTask(@Body task: Task, @Path("id") id: String? = task.id): Response<Task>
-
 }
